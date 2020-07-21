@@ -5,12 +5,13 @@ clear all; close all;clc;
 H=240; W=320;HEIGHT=240; WIDTH=320;counter=1;BAND=10;
 
 % Define treshold and limits for the hough transform
-THRES=30;upper=10;lower=10;left=10;right=10;
 THRES=input('Define Threshold for Hough Transform (default 30):  ');
 upper=input('Ignore first upper pixels (default 10):  ');
 lower=input('Ignore last lower pixels (default 10): ');
 left=input('Ignore first left pixels (default 10): ');
 right=input('Ignore last right pixels (default 10): ');
+
+%THRES=30;upper=10;lower=10;left=10;right=10;
 
 % Load the dat file with the image acquired.
 load matt6.dat;
@@ -31,8 +32,14 @@ for i=1:240
       k=k+1;
    end;
 end;
-%mat1=uint8(mat);
-%imshow(mat1);
+mat1=uint8(mat);
+figure;%(1)
+subplot(2,2,1);
+imshow(mat1)
+xlabel('Original Frame');
+
+%Remark - pixel = 0 (black) / pixel = 255 (white)
+
 for i=1:240
    for j=1:320
       matgrad(i,j)=255; % Fill with white.
@@ -48,7 +55,7 @@ for i=upper:240-lower
       if grad>255
          grad=255;
       end;
-      % REMARK: We only avaluate the gradient bellow the upper ignore region.
+      % REMARK: We only evaluate the gradient bellow the upper ignore region.
       if grad>THRES & alpha>=pi/10 & alpha<=pi/3
          matgrad(i,j)=0;
       else
@@ -56,8 +63,11 @@ for i=upper:240-lower
       end;
     end;
 end;
-%imshow(matgrad);
+subplot(2,2,2);
+imshow(matgrad);
+xlabel('Image gradient in allowable region');
 %title('Image gradient in allowable region');
+
 % We now calculate the Hough transform, in order to find the two lines.
 thetaminh=10*(2*pi/360); % In rad
 thetamaxh=30*(2*pi/360); % In rad
@@ -211,8 +221,11 @@ for i=1:255
    map(i,2)=i/255;
    map(i,3)=i/255;
 end;
-figure(1);
+
+subplot(2,2,3);
 imshow(matgrad1,map); % Map is necessary for displaying more than 2 colors.
+xlabel('Image with Hough Transform + WRLS');
+
 coefd
  %teta = update(matgrad,matgrad1,coefd);
  %teta
@@ -409,7 +422,7 @@ for i=1:order
    end;
 end;
 
-%*******AQUI TERMINA A FUNÇAO INVERSAO DE MATRIZES
+%*******AQUI TERMINA A FUNÃ‡AO INVERSAO DE MATRIZES
 
 %t=toc;
 %disp('tempo');
@@ -491,5 +504,9 @@ teta2=teta
    map(i,2)=i/255;
    map(i,3)=i/255;
  end;
- figure(2);
- imshow(matgrad1,map); % Map is necessary for displaying more than 2 colors.
+ 
+ 
+ 
+subplot(2,2,4);
+imshow(matgrad1,map); % Map is necessary for displaying more than 2 colors.
+xlabel('Image with Hough Transform + Kalman Filter');
